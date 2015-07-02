@@ -11,9 +11,3 @@ func Models() []interface{} {
 		&User{},
 	}
 }
-
-func Stores() []interface{} {
-	return []interface{}{
-		UserSQL{},
-	}
-}

@@ -10,6 +10,7 @@ import (
 	"github.com/iogo-framework/router"
 	"github.com/jinzhu/gorm"
 	"github.com/jmoiron/sqlx"
+	"github.com/quorumsco/users/controllers"
 	"github.com/quorumsco/users/models"
 	"github.com/quorumsco/users/views"
 )
@@ -25,9 +26,9 @@ func main() {
 	cmd.Version = "0.0.1"
 	cmd.Before = serve
 	cmd.Flags = append(cmd.Flags, []cli.Flag{
-		cli.StringFlag{Name: "cpu, cpuprofile", Usage: "cpu profiling"},
-		cli.BoolFlag{Name: "m, migrate", Usage: "migrate the database"},
-		cli.StringFlag{Name: "listen, l", Value: "localhost:8080", Usage: "server listening port"},
+		cli.BoolFlag{Name: "migrate, m", Usage: "migrate the database"},
+		cli.StringFlag{Name: "listen, l", Value: "0.0.0.0:8080", Usage: "server listening host:port"},
+		cli.BoolFlag{Name: "debug, d", Usage: "print debug information"},
 		cli.HelpFlag,
 	}...)
 	cmd.RunAndExitOnError()
@@ -42,18 +43,12 @@ func serve(ctx *cli.Context) error {
 		logs.Debug("Database migrated")
 	}
 
-	if app, err = application.New(); err != nil {
+	app = application.New()
+	if app.Components["DB"], err = sqlx.Connect("sqlite3", "/tmp/contacts.db"); err != nil {
 		return err
 	}
-
-	app.Components["DB"], err = initSQLX()
-	if err != nil {
-		return err
-	}
-
 	app.Components["Templates"] = views.Templates()
-
-	app.Mux = router.New()
+	app.Components["Mux"] = router.New()
 
 	app.Use(router.Logger)
 	app.Use(app.Apply)
@@ -84,19 +79,4 @@ func migrate() {
 	db.LogMode(false)
 
 	db.AutoMigrate(models.Models()...)
-}
-
-func initSQLX() (*sqlx.DB, error) {
-	var db *sqlx.DB
-	var err error
-
-	if db, err = sqlx.Connect("sqlite3", "/tmp/contacts.db"); err != nil {
-		return nil, err
-	}
-
-	db.Ping()
-	db.SetMaxIdleConns(10)
-	db.SetMaxOpenConns(100)
-
-	return db, nil
 }
