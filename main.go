@@ -1,9 +1,7 @@
 package main
 
 import (
-	"net/http"
 	"runtime"
-	"text/template"
 
 	"github.com/codegangsta/cli"
 	"github.com/iogo-framework/application"
@@ -12,7 +10,8 @@ import (
 	"github.com/iogo-framework/router"
 	"github.com/jinzhu/gorm"
 	"github.com/jmoiron/sqlx"
-	"github.com/quorumsco/contacts/models"
+	"github.com/quorumsco/users/models"
+	"github.com/quorumsco/users/views"
 )
 
 func init() {
@@ -52,26 +51,19 @@ func serve(ctx *cli.Context) error {
 		return err
 	}
 
-	app.Components["Templates"] = make(map[string]*template.Template)
+	app.Components["Templates"] = views.Templates()
 
 	app.Mux = router.New()
 
 	app.Use(router.Logger)
 	app.Use(app.Apply)
-	app.Use(cors)
+
+	app.Get("/users/register", controllers.Register)
+	app.Post("/users/register", controllers.Register)
 
 	app.Serve(ctx.String("listen"))
 
 	return nil
-}
-
-func cors(h http.Handler) http.Handler {
-	fn := func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Access-Control-Allow-Origin", "*")
-		w.Header().Set("Access-Control-Allow-Headers", "access-control-allow-origin,content-type")
-		h.ServeHTTP(w, r)
-	}
-	return http.HandlerFunc(fn)
 }
 
 func migrate() {
