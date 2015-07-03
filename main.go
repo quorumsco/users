@@ -60,9 +60,7 @@ func serve(ctx *cli.Context) error {
 	app.Get("/users/register", controllers.Register)
 	app.Post("/users/register", controllers.Register)
 
-	app.Serve(ctx.String("listen"))
-
-	return nil
+	return app.Serve(ctx.String("listen"))
 }
 
 func migrate() {
