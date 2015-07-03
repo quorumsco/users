@@ -1,14 +1,11 @@
 package controllers
 
 import (
-	"fmt"
 	"net/http"
 
 	"golang.org/x/crypto/bcrypt"
 
-	. "github.com/iogo-framework/jsonapi"
 	"github.com/quorumsco/users/models"
-	"github.com/quorumsco/users/views"
 
 	"github.com/iogo-framework/logs"
 )
@@ -45,36 +42,9 @@ func Register(w http.ResponseWriter, req *http.Request) {
 			return
 		}
 	}
-}
 
-func CreateUser(w http.ResponseWriter, req *http.Request) {
-	db := getDB(req)
-	store := models.UserStore(db)
-
-	var u = new(models.User)
-	err := Request(&views.User{User: u}, req)
-	if err != nil {
-		logs.Debug(err)
-		Fail(w, req, map[string]interface{}{"contact": err.Error()}, http.StatusBadRequest)
-		return
-	}
-
-	errs := u.Validate()
-	if len(errs) > 0 {
-		logs.Debug(errs)
-		w.Header().Set("Access-Control-Allow-Origin", "*")
-		Fail(w, req, map[string]interface{}{"contact": errs}, http.StatusBadRequest)
-		return
-	}
-
-	err = store.Save(u)
-	if err != nil {
+	templates := getTemplates(req)
+	if err := templates["users/register"].ExecuteTemplate(w, "base", nil); err != nil {
 		logs.Error(err)
-		Error(w, req, err.Error(), http.StatusInternalServerError)
-		return
 	}
-
-	w.Header().Set("Location", fmt.Sprintf("/%s/%d", "contacts", u.ID))
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-	Success(w, req, views.User{User: u}, http.StatusCreated)
 }

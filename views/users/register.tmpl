@@ -1,9 +1,10 @@
 {{ define "content" }}
+<h3>Register</h3>
 <form method="POST" action="/users/register">
-    <input type="text" name="firstname">
-    <input type="text" name="lastname">
-    <input type="text" name="email">
-    <input type="text" name="password">
+    <input type="text" name="firstname" placeholder="firstname">
+    <input type="text" name="surname" placeholder="surname">
+    <input type="text" name="mail" placeholder="mail">
+    <input type="text" name="password" placeholder="password">
     <input type="submit" value="Register">
 </form>
 {{ end }}
