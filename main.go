@@ -38,6 +38,10 @@ func serve(ctx *cli.Context) error {
 	var app *application.Application
 	var err error
 
+	if ctx.Bool("debug") {
+		logs.Level(logs.DebugLevel)
+	}
+
 	if ctx.Bool("migrate") {
 		migrate()
 		logs.Debug("Database migrated")
