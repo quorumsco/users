@@ -28,7 +28,7 @@ func main() {
 	cmd.Flags = append(cmd.Flags, []cli.Flag{
 		cli.BoolFlag{Name: "migrate, m", Usage: "migrate the database"},
 		cli.StringFlag{Name: "listen, l", Value: "0.0.0.0:8080", Usage: "server listening host:port"},
-		cli.BoolFlag{Name: "debug, d", Usage: "print debug information"},
+		cli.BoolFlag{Name: "debug, d", Usage: "print debug information", EnvVar: "DEBUG"},
 		cli.HelpFlag,
 	}...)
 	cmd.RunAndExitOnError()
