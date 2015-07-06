@@ -55,21 +55,34 @@ func serve(ctx *cli.Context) error {
 		logs.Level(logs.DebugLevel)
 	}
 
-	postgres := fmt.Sprintf("postgres://%s:%s@%s:%d/%s?sslmode=verify-full",
-		ctx.String("postgres-user"),
-		ctx.String("postgres-password"),
-		ctx.String("postgres-host"),
-		ctx.Int("postgres-port"),
-		ctx.String("postgres-db"),
-	)
+	var dialect, args string
+
+	switch ctx.String("sql-dialect") {
+	case "postgres":
+		dialect = "sqlite"
+		args = fmt.Sprintf("postgres://%s:%s@%s:%d/%s?sslmode=verify-full",
+			ctx.String("postgres-user"),
+			ctx.String("postgres-password"),
+			ctx.String("postgres-host"),
+			ctx.Int("postgres-port"),
+			ctx.String("postgres-db"),
+		)
+		logs.Debug("Database %s at %s", dialect, ctx.String("postgres-host"))
+	case "sqlite":
+		fallthrough
+	default:
+		dialect = "sqlite"
+		args = ctx.String("sqlite-path")
+		logs.Debug("Database %s at %s", dialect, args)
+	}
 
 	if ctx.Bool("migrate") {
-		migrate("postgres", postgres)
+		migrate(dialect, args)
 		logs.Debug("Database migrated")
 	}
 
 	app = application.New()
-	if app.Components["DB"], err = sqlx.Connect("postgres", postgres); err != nil {
+	if app.Components["DB"], err = sqlx.Connect(dialect, args); err != nil {
 		return err
 	}
 	app.Components["Templates"] = views.Templates()
