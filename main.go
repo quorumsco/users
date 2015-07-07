@@ -67,14 +67,20 @@ func serve(ctx *cli.Context) error {
 			ctx.Int("postgres-port"),
 			ctx.String("postgres-db"),
 		)
-		logs.Debug("Loading database %s at %s", dialect, ctx.String("postgres-host"))
 	case "sqlite3":
 		fallthrough
 	default:
 		dialect = "sqlite3"
 		args = ctx.String("sqlite-path")
-		logs.Debug("Loading database %s at %s", dialect, args)
 	}
+	logs.Debug("Database type %s", dialect)
+
+	app = application.New()
+	if app.Components["DB"], err = databases.InitSQLX(dialect, args); err != nil {
+		logs.Critical(err)
+		os.Exit(1)
+	}
+	logs.Debug("Connected to database %s at %s", dialect, args)
 
 	if ctx.Bool("migrate") {
 		if err := migrate(dialect, args); err != nil {
@@ -84,11 +90,6 @@ func serve(ctx *cli.Context) error {
 		logs.Debug("Database migrated successfully")
 	}
 
-	app = application.New()
-	if app.Components["DB"], err = databases.InitSQLX(dialect, args); err != nil {
-		logs.Critical(err)
-		os.Exit(1)
-	}
 	app.Components["Templates"] = views.Templates()
 	app.Components["Mux"] = router.New()
 
