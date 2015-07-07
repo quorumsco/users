@@ -8,7 +8,7 @@ ADD . /go/src/github.com/quorumsco/users
 WORKDIR /go/src/github.com/quorumsco/users
 
 RUN \
-  go get && \
+  go get -u && \
   go build
 
 EXPOSE 8080
