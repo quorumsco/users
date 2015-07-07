@@ -2,7 +2,9 @@ package main
 
 import (
 	"fmt"
+	"os"
 	"runtime"
+	"time"
 
 	"github.com/codegangsta/cli"
 	"github.com/iogo-framework/application"
@@ -74,7 +76,7 @@ func serve(ctx *cli.Context) error {
 	default:
 		dialect = "sqlite3"
 		args = ctx.String("sqlite-path")
-		logs.Debug("Database %s at %s", dialect, args)
+		logs.Debug("Loading database %s at %s", dialect, args)
 	}
 
 	if ctx.Bool("migrate") {
@@ -83,8 +85,17 @@ func serve(ctx *cli.Context) error {
 	}
 
 	app = application.New()
-	if app.Components["DB"], err = sqlx.Connect(dialect, args); err != nil {
-		return err
+	var i = 1
+	for {
+		if app.Components["DB"], err = sqlx.Connect(dialect, args); err != nil {
+			logs.Error(err)
+			i++
+		}
+		if i > 3 {
+			logs.Critical("Cannot connect to database")
+			os.Exit(1)
+		}
+		time.Sleep(5 * time.Second)
 	}
 	app.Components["Templates"] = views.Templates()
 	app.Components["Mux"] = router.New()
