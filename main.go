@@ -63,7 +63,7 @@ func serve(ctx *cli.Context) error {
 	switch ctx.String("sql-dialect") {
 	case "postgres":
 		dialect = "postgres"
-		args = fmt.Sprintf("postgres://%s:%s@%s:%d/%s?sslmode=verify-full",
+		args = fmt.Sprintf("postgres://%s:%s@%s:%d/%s",
 			ctx.String("postgres-user"),
 			ctx.String("postgres-password"),
 			ctx.String("postgres-host"),
@@ -90,6 +90,8 @@ func serve(ctx *cli.Context) error {
 		if app.Components["DB"], err = sqlx.Connect(dialect, args); err != nil {
 			logs.Error(err)
 			i++
+		} else {
+			break
 		}
 		if i > 3 {
 			logs.Critical("Cannot connect to database")
