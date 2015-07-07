@@ -63,7 +63,7 @@ func serve(ctx *cli.Context) error {
 	switch ctx.String("sql-dialect") {
 	case "postgres":
 		dialect = "postgres"
-		args = fmt.Sprintf("postgres://%s:%s@%s:%d/%s",
+		args = fmt.Sprintf("postgres://%s:%s@%s:%d/%s?sslmode=disable",
 			ctx.String("postgres-user"),
 			ctx.String("postgres-password"),
 			ctx.String("postgres-host"),
