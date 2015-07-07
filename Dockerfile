@@ -1,6 +1,8 @@
 FROM golang
 MAINTAINER Douézan-Grard Guillaume - Quorums
 
+RUN go get github.com/quorumsco/users
+
 ADD . /go/src/github.com/quorumsco/users
 
 WORKDIR /go/src/github.com/quorumsco/users
