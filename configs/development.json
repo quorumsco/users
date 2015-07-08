@@ -1,0 +1,16 @@
+{
+  "settings": {
+    "debug": true,
+    "migrate": true,
+    "database": "sqlite3"
+  },
+  "components": {
+    "server": {
+      "host": "0.0.0.0",
+      "port": 8080
+    },
+    "sqlite3": {
+      "path": "/tmp/users.sqlite"
+    }
+  }
+}

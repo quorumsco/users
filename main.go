@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"os"
 	"runtime"
 
@@ -11,6 +10,7 @@ import (
 	"github.com/iogo-framework/databases"
 	"github.com/iogo-framework/logs"
 	"github.com/iogo-framework/router"
+	"github.com/iogo-framework/settings"
 	"github.com/quorumsco/users/controllers"
 	"github.com/quorumsco/users/models"
 	"github.com/quorumsco/users/views"
@@ -27,21 +27,8 @@ func main() {
 	cmd.Version = "0.0.1"
 	cmd.Before = serve
 	cmd.Flags = append(cmd.Flags, []cli.Flag{
-		cli.StringFlag{Name: "listen-host", Value: "0.0.0.0", Usage: "server listening host", EnvVar: "LISTEN_HOST"},
-		cli.IntFlag{Name: "listen-port", Value: 8080, Usage: "server listening port", EnvVar: "LISTEN_PORT"},
-
-		cli.StringFlag{Name: "sql-dialect", Value: "sqlite3", Usage: "database dialect ('sqlite3' or 'postgres')", EnvVar: "SQL_DIALECT"},
-
-		cli.StringFlag{Name: "postgres-host", Value: "postgres", Usage: "postgresql host", EnvVar: "POSTGRES_HOST"},
-		cli.IntFlag{Name: "postgres-port", Value: 5432, Usage: "postgresql port", EnvVar: "POSTGRES_PORT"},
-		cli.StringFlag{Name: "postgres-user", Value: "postgres", Usage: "postgresql user", EnvVar: "POSTGRES_USER"},
-		cli.StringFlag{Name: "postgres-password", Value: "postgres", Usage: "postgresql password", EnvVar: "POSTGRES_PASSWORD"},
-		cli.StringFlag{Name: "postgres-db", Value: "postgres", Usage: "postgresql database", EnvVar: "POSTGRES_DB"},
-
-		cli.StringFlag{Name: "sqlite-path", Value: "/tmp/db.sqlite", Usage: "sqlite path", EnvVar: "SQLITE_PATH"},
-
-		cli.BoolFlag{Name: "migrate, m", Usage: "migrate the database", EnvVar: "MIGRATE"},
-		cli.BoolFlag{Name: "debug, d", Usage: "print debug information", EnvVar: "DEBUG"},
+		cli.StringFlag{Name: "config, c", Usage: "configuration file", EnvVar: "CONFIG"},
+		cli.BoolFlag{Name: "debug, d", Usage: "debug log level"},
 		cli.HelpFlag,
 	}...)
 	cmd.RunAndExitOnError()
@@ -51,43 +38,35 @@ func serve(ctx *cli.Context) error {
 	var app *application.Application
 	var err error
 
-	if ctx.Bool("debug") {
+	config, err := settings.Parse(ctx.String("config"))
+	if err != nil && ctx.String("config") != "" {
+		logs.Error(err)
+	}
+
+	if ctx.Bool("debug") || config.Debug() {
 		logs.Level(logs.DebugLevel)
 	}
 
-	var dialect, args string
-
-	switch ctx.String("sql-dialect") {
-	case "postgres":
-		dialect = "postgres"
-		args = fmt.Sprintf("postgres://%s:%s@%s:%d/%s?sslmode=disable",
-			ctx.String("postgres-user"),
-			ctx.String("postgres-password"),
-			ctx.String("postgres-host"),
-			ctx.Int("postgres-port"),
-			ctx.String("postgres-db"),
-		)
-	case "sqlite3":
-		fallthrough
-	default:
-		dialect = "sqlite3"
-		args = ctx.String("sqlite-path")
+	dialect, args, err := config.SqlDB()
+	if err != nil {
+		logs.Critical(err)
+		os.Exit(1)
 	}
-	logs.Debug("Database type %s", dialect)
+	logs.Debug("database type: %s", dialect)
 
 	app = application.New()
 	if app.Components["DB"], err = databases.InitSQLX(dialect, args); err != nil {
 		logs.Critical(err)
 		os.Exit(1)
 	}
-	logs.Debug("Connected to database %s at %s", dialect, args)
+	logs.Debug("connected to %s", args)
 
-	if ctx.Bool("migrate") {
+	if config.Migrate() {
 		if err := migrate(dialect, args); err != nil {
 			logs.Critical(err)
 			os.Exit(1)
 		}
-		logs.Debug("Database migrated successfully")
+		logs.Debug("database migrated successfully")
 	}
 
 	app.Components["Templates"] = views.Templates()
@@ -99,7 +78,12 @@ func serve(ctx *cli.Context) error {
 	app.Get("/users/register", controllers.Register)
 	app.Post("/users/register", controllers.Register)
 
-	return app.Serve(fmt.Sprintf("%s:%d", ctx.String("listen-host"), ctx.Int("listen-port")))
+	server, err := config.Server()
+	if err != nil {
+		logs.Critical(err)
+		os.Exit(1)
+	}
+	return app.Serve(server.String())
 }
 
 func migrate(dialect string, args string) error {
