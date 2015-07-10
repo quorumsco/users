@@ -1,0 +1,88 @@
+{
+	"ImportPath": "github.com/quorumsco/users",
+	"GoVersion": "go1.4.2",
+	"Packages": [
+		"./..."
+	],
+	"Deps": [
+		{
+			"ImportPath": "github.com/asaskevich/govalidator",
+			"Comment": "v1-17-gdd82d52",
+			"Rev": "dd82d520f7795e8da1cfde36b17b2f7283f74fff"
+		},
+		{
+			"ImportPath": "github.com/codegangsta/cli",
+			"Comment": "1.2.0-127-gad48024",
+			"Rev": "ad480243a8a6cda30acf7cd999ea3e5142154fde"
+		},
+		{
+			"ImportPath": "github.com/fatih/color",
+			"Comment": "v0.1",
+			"Rev": "1b35f289c47d5c73c398cea8e006b7bcb6234a96"
+		},
+		{
+			"ImportPath": "github.com/go-sql-driver/mysql",
+			"Comment": "v1.2-112-gfb72997",
+			"Rev": "fb7299726d2e68745a8805b14f2ff44b5c2cfa84"
+		},
+		{
+			"ImportPath": "github.com/iogo-framework/application",
+			"Rev": "5b79d9b0ab84861e8f20b648916d4572f4e3abe5"
+		},
+		{
+			"ImportPath": "github.com/iogo-framework/cmd",
+			"Rev": "fe20a849183125d866e52333be2a123cefa4ad05"
+		},
+		{
+			"ImportPath": "github.com/iogo-framework/databases",
+			"Rev": "4fc50e53077432246684f9b766a6f3f6a81b8962"
+		},
+		{
+			"ImportPath": "github.com/iogo-framework/logs",
+			"Rev": "0247b60e20020bc43a369063d97b55493ec673c1"
+		},
+		{
+			"ImportPath": "github.com/iogo-framework/router",
+			"Rev": "655fbf5f1231876623cadba9edd1f54cfd16816a"
+		},
+		{
+			"ImportPath": "github.com/iogo-framework/settings",
+			"Rev": "5fe0c810c3b4b51b1f6a8eab97ce13589f52148c"
+		},
+		{
+			"ImportPath": "github.com/jinzhu/gorm",
+			"Rev": "dbedca4e5fe81ba68969835399c3d0866a260fa3"
+		},
+		{
+			"ImportPath": "github.com/jmoiron/sqlx",
+			"Comment": "sqlx-v1.1-17-gc06fc0c",
+			"Rev": "c06fc0ca86a92cca7ea9eb4333b095584e7746f3"
+		},
+		{
+			"ImportPath": "github.com/lib/pq",
+			"Comment": "go1.0-cutoff-51-ga8d8d01",
+			"Rev": "a8d8d01c4f91602f876bf5aa210274e8203a6b45"
+		},
+		{
+			"ImportPath": "github.com/mattn/go-sqlite3",
+			"Rev": "542ae647f8601bafd96233961b150cae198e0295"
+		},
+		{
+			"ImportPath": "github.com/shiena/ansicolor",
+			"Rev": "23296fbcefa1c43b2151a2c65812b71b85cf9f9b"
+		},
+		{
+			"ImportPath": "github.com/zenazn/goji/web/mutil",
+			"Comment": "v0.9.0-22-g1421f7c",
+			"Rev": "1421f7cecb33069e8a1d951d57d76544ffaac735"
+		},
+		{
+			"ImportPath": "golang.org/x/crypto/bcrypt",
+			"Rev": "cc04154d65fb9296747569b107cfd05380b1ea3e"
+		},
+		{
+			"ImportPath": "golang.org/x/crypto/blowfish",
+			"Rev": "cc04154d65fb9296747569b107cfd05380b1ea3e"
+		}
+	]
+}
