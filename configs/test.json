@@ -1,0 +1,19 @@
+{
+  "settings": {
+    "debug": true,
+    "migrate": true,
+    "database": "postgres"
+  },
+  "components": {
+    "server": {
+      "host": "0.0.0.0",
+      "port": 8080
+    },
+    "postgres": {
+      "db": "postgres",
+      "host": "localhost",
+      "port": 5432,
+      "user": "postgres"
+    }
+  }
+}

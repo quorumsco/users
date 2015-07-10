@@ -72,7 +72,10 @@ func serve(ctx *cli.Context) error {
 	app.Components["Templates"] = views.Templates()
 	app.Components["Mux"] = router.New()
 
-	app.Use(router.Logger)
+	if ctx.Bool("debug") || config.Debug() {
+		app.Use(router.Logger)
+	}
+
 	app.Use(app.Apply)
 
 	app.Get("/users/register", controllers.Register)
