@@ -7,9 +7,7 @@ ADD . /go/src/github.com/quorumsco/users
 
 WORKDIR /go/src/github.com/quorumsco/users
 
-RUN \
-  godep restore && \
-  go build
+RUN godep go build
 
 EXPOSE 8080
 
