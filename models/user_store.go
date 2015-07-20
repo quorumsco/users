@@ -23,12 +23,20 @@ func UserStore(db *sqlx.DB) UserDS {
 
 func (s *UserSQL) Save(u *User) error {
 	if u.ID == 0 {
-		result, err := s.DB.NamedExec("INSERT INTO users (firstname, surname, mail, password) VALUES (:firstname, :surname, :mail, :password)", u)
+		var err error
+		if s.DB.DriverName() == "postgres" {
+			var result *sqlx.Rows
+			result, err = s.DB.NamedQuery("INSERT INTO users (firstname, surname, mail, password) VALUES (:firstname, :surname, :mail, :password) RETURNING id", u)
+			result.Scan(&u.ID)
+		} else {
+			var result sql.Result
+			result, err = s.DB.NamedExec("INSERT INTO users (firstname, surname, mail, password) VALUES (:firstname, :surname, :mail, :password)", u)
+			u.ID, err = result.LastInsertId()
+		}
 		if err != nil {
 			return err
 		}
 
-		u.ID, err = result.LastInsertId()
 		return err
 	}
 
@@ -49,7 +57,7 @@ func (s *UserSQL) Delete(u *User) error {
 }
 
 func (s *UserSQL) First(u *User) error {
-	if err := s.DB.Get(u, "SELECT * FROM users WHERE id=? LIMIT 1", u.ID); err != nil {
+	if err := s.DB.Get(u, s.DB.Rebind("SELECT * FROM users WHERE id=? LIMIT 1"), u.ID); err != nil {
 		return err
 	}
 	return nil
