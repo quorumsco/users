@@ -1,15 +1,13 @@
 FROM golang
 MAINTAINER Douézan-Grard Guillaume - Quorums
 
-RUN go get github.com/quorumsco/users
+RUN go get github.com/tools/godep
 
 ADD . /go/src/github.com/quorumsco/users
 
 WORKDIR /go/src/github.com/quorumsco/users
 
-RUN \
-  go get -u && \
-  go build
+RUN godep go build
 
 EXPOSE 8080
 
