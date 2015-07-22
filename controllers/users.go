@@ -7,7 +7,7 @@ import (
 
 	"github.com/quorumsco/users/models"
 
-	"github.com/iogo-framework/logs"
+	"github.com/quorumsco/logs"
 )
 
 func sPtr(s string) *string { return &s }
