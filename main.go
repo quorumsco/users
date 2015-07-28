@@ -28,14 +28,12 @@ func main() {
 	cmd.Before = serve
 	cmd.Flags = append(cmd.Flags, []cli.Flag{
 		cli.StringFlag{Name: "config, c", Usage: "configuration file", EnvVar: "CONFIG"},
-		cli.BoolFlag{Name: "debug, d", Usage: "debug log level"},
 		cli.HelpFlag,
 	}...)
 	cmd.RunAndExitOnError()
 }
 
 func serve(ctx *cli.Context) error {
-	var app *application.Application
 	var err error
 
 	var config settings.Config
@@ -57,7 +55,7 @@ func serve(ctx *cli.Context) error {
 	}
 	logs.Debug("database type: %s", dialect)
 
-	app = application.New()
+	var app = application.New()
 	if app.Components["DB"], err = databases.InitSQLX(dialect, args); err != nil {
 		logs.Critical(err)
 		os.Exit(1)
@@ -93,7 +91,7 @@ func serve(ctx *cli.Context) error {
 }
 
 func migrate(dialect string, args string) error {
-	db, err := databases.InitGORM(dialect, args)
+	var db, err = databases.InitGORM(dialect, args)
 	if err != nil {
 		return err
 	}

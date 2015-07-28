@@ -14,8 +14,6 @@ func sPtr(s string) *string { return &s }
 
 func Register(w http.ResponseWriter, req *http.Request) {
 	if req.Method == "POST" {
-		store := models.UserStore(getDB(req))
-
 		req.ParseForm()
 
 		passwordHash, err := bcrypt.GenerateFromPassword([]byte(req.FormValue("password")), bcrypt.DefaultCost)
@@ -36,6 +34,7 @@ func Register(w http.ResponseWriter, req *http.Request) {
 			return
 		}
 
+		var store = models.UserStore(getDB(req))
 		err = store.Save(u)
 		if err != nil {
 			logs.Error(err)

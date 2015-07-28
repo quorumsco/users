@@ -12,6 +12,7 @@ type User struct {
 
 func (u *User) Validate() map[string]string {
 	var errs = make(map[string]string)
+
 	switch {
 	case u.Mail == nil:
 		errs["mail"] = "is required"
@@ -20,5 +21,6 @@ func (u *User) Validate() map[string]string {
 	case u.Password == nil:
 		errs["password"] = "is required"
 	}
+
 	return errs
 }

@@ -33,43 +33,28 @@ func (s *UserSQL) Save(u *User) error {
 			result, err = s.DB.NamedExec("INSERT INTO users (firstname, surname, mail, password) VALUES (:firstname, :surname, :mail, :password)", u)
 			u.ID, err = result.LastInsertId()
 		}
-		if err != nil {
-			return err
-		}
-
 		return err
 	}
 
 	_, err := s.DB.NamedExec("UPDATE users SET firstname=:firstname, surname=:surname, mail=:mail, password=:password WHERE id=:id", u)
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return err
 }
 
 func (s *UserSQL) Delete(u *User) error {
 	_, err := s.DB.NamedExec("DELETE FROM users WHERE id=:id", u)
-	if err != nil {
-		return err
-	}
-	return nil
+	return err
 }
 
 func (s *UserSQL) First(u *User) error {
-	if err := s.DB.Get(u, s.DB.Rebind("SELECT * FROM users WHERE id=? LIMIT 1"), u.ID); err != nil {
-		return err
-	}
-	return nil
+	err := s.DB.Get(u, s.DB.Rebind("SELECT * FROM users WHERE id=? LIMIT 1"), u.ID)
+	return err
 }
 
 func (s *UserSQL) Find() ([]User, error) {
 	var users []User
-	if err := s.DB.Select(&users, "SELECT id, firstname, surname FROM users ORDER BY surname DESC"); err != nil {
-		if err == sql.ErrNoRows {
-			return users, nil
-		}
-		return nil, err
+	err := s.DB.Select(&users, "SELECT id, firstname, surname FROM users ORDER BY surname DESC")
+	if err == sql.ErrNoRows {
+		return users, nil
 	}
-	return users, nil
+	return users, err
 }
