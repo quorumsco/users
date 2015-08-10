@@ -8,6 +8,7 @@ import (
 	"github.com/quorumsco/application"
 	"github.com/quorumsco/cmd"
 	"github.com/quorumsco/databases"
+	"github.com/quorumsco/gojimux"
 	"github.com/quorumsco/logs"
 	"github.com/quorumsco/router"
 	"github.com/quorumsco/settings"
@@ -71,7 +72,8 @@ func serve(ctx *cli.Context) error {
 	}
 
 	app.Components["Templates"] = views.Templates()
-	app.Components["Mux"] = router.New()
+	// app.Components["Mux"] = router.New()
+	app.Components["Mux"] = gojimux.New()
 
 	if config.Debug() {
 		app.Use(router.Logger)

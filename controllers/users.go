@@ -5,9 +5,8 @@ import (
 
 	"golang.org/x/crypto/bcrypt"
 
-	"github.com/quorumsco/users/models"
-
 	"github.com/quorumsco/logs"
+	"github.com/quorumsco/users/models"
 )
 
 func sPtr(s string) *string { return &s }

@@ -8,6 +8,7 @@ type User struct {
 	Password  *string `sql:"not null"`
 	Firstname *string `sql:"not null" json:"firstname"`
 	Surname   *string `sql:"not null" json:"surname"`
+	GroupID   uint    `json:"group_id"`
 }
 
 func (u *User) Validate() map[string]string {
