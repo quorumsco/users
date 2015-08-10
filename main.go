@@ -82,6 +82,7 @@ func serve(ctx *cli.Context) error {
 	app.Use(app.Apply)
 
 	app.Get("/users/register", controllers.Register)
+	app.Get("/users/auth", controllers.Auth)
 	app.Post("/users/register", controllers.Register)
 
 	server, err := config.Server()

@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"net/http"
 
 	"golang.org/x/crypto/bcrypt"
@@ -45,4 +46,8 @@ func Register(w http.ResponseWriter, req *http.Request) {
 	if err := templates["users/register"].ExecuteTemplate(w, "base", nil); err != nil {
 		logs.Error(err)
 	}
+}
+
+func Auth(w http.ResponseWriter, req *http.Request) {
+	fmt.Println("CACA MDR")
 }
