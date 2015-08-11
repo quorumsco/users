@@ -3,7 +3,7 @@ package router
 import "regexp"
 
 type segment interface {
-	Match(string) (string, param, bool)
+	Match(string) (string, Param, bool)
 	Is(segment) bool
 	Params() uint8
 }
@@ -36,9 +36,9 @@ type staticSegment struct {
 	value string
 }
 
-func (s *staticSegment) Match(path string) (string, param, bool) {
+func (s *staticSegment) Match(path string) (string, Param, bool) {
 	//fmt.Println(path, s.value)
-	return path[len(s.value):], param{}, string(path[:len(s.value)]) == s.value
+	return path[len(s.value):], Param{}, string(path[:len(s.value)]) == s.value
 }
 
 func (s *staticSegment) Is(t segment) bool {
@@ -53,13 +53,13 @@ type paramSegment struct {
 	name string
 }
 
-func (s *paramSegment) Match(path string) (string, param, bool) {
+func (s *paramSegment) Match(path string) (string, Param, bool) {
 	var i = 0
 	for i < len(path) && path[i] != '/' {
 		i++
 	}
 	//fmt.Println(path, s.name, path[:i])
-	return path[i:], param{name: s.name, value: path[:i]}, true
+	return path[i:], Param{Name: s.name, Value: path[:i]}, true
 }
 
 func (s *paramSegment) Is(t segment) bool {
@@ -74,8 +74,8 @@ type catchAllSegment struct {
 	name string
 }
 
-func (s *catchAllSegment) Match(path string) (string, param, bool) {
-	return "", param{name: s.name, value: path}, true
+func (s *catchAllSegment) Match(path string) (string, Param, bool) {
+	return "", Param{Name: s.name, Value: path}, true
 }
 
 func (s *catchAllSegment) Is(t segment) bool {
@@ -90,6 +90,6 @@ type regexpSegment struct {
 	regex regexp.Regexp
 }
 
-func (s *regexpSegment) Match(path string) (string, param, bool) {
-	return path[1:], param{}, true
+func (s *regexpSegment) Match(path string) (string, Param, bool) {
+	return path[1:], Param{}, true
 }

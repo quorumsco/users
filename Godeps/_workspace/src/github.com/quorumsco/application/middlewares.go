@@ -16,8 +16,3 @@ func (app *Application) Apply(h http.Handler) http.Handler {
 	}
 	return http.HandlerFunc(fn)
 }
-
-// App retrieves the Application stored by the middleware Apply.
-func App(r *http.Request) *Application {
-	return router.Context(r).Env["Application"].(*Application)
-}

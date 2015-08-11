@@ -1,13 +1,16 @@
 package controllers
 
 import (
-	"fmt"
+	"encoding/json"
+	"io/ioutil"
 	"net/http"
 
 	"golang.org/x/crypto/bcrypt"
 
+	. "github.com/quorumsco/jsonapi"
 	"github.com/quorumsco/logs"
 	"github.com/quorumsco/users/models"
+	"github.com/quorumsco/users/views"
 )
 
 func sPtr(s string) *string { return &s }
@@ -48,6 +51,34 @@ func Register(w http.ResponseWriter, req *http.Request) {
 	}
 }
 
-func Auth(w http.ResponseWriter, req *http.Request) {
-	fmt.Println("CACA MDR")
+func Auth(w http.ResponseWriter, r *http.Request) {
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		logs.Error(err)
+		Fail(w, r, map[string]string{"Authentification": "Error"}, http.StatusBadRequest)
+		return
+	}
+	infos := make(map[string]interface{})
+	if err := json.Unmarshal(body, &infos); err != nil {
+		logs.Error(err)
+		Fail(w, r, map[string]string{"Authentification": "Bad parameters"}, http.StatusBadRequest)
+		return
+	}
+	username := infos["username"].(string)
+	password := infos["password"].(string)
+
+	var u = models.User{Mail: &username, Password: &password}
+
+	var db = getDB(r)
+	var userStore = models.UserStore(db)
+	if err = userStore.First(&u); err != nil {
+		logs.Error(err)
+		Error(w, r, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	if u.GroupID == 0 {
+		Fail(w, r, map[string]interface{}{"User": "No such user"}, http.StatusBadRequest)
+		return
+	}
+	Success(w, r, views.User{User: &u}, http.StatusOK)
 }

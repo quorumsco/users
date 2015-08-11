@@ -1,6 +1,9 @@
 {
 	"ImportPath": "github.com/quorumsco/users",
 	"GoVersion": "go1.4.2",
+	"Packages": [
+		"./..."
+	],
 	"Deps": [
 		{
 			"ImportPath": "github.com/asaskevich/govalidator",
@@ -46,7 +49,7 @@
 		},
 		{
 			"ImportPath": "github.com/quorumsco/application",
-			"Rev": "a8d01bbf66fa2e5934e66d28dc0f8fe913b79cb8"
+			"Rev": "c03629cc2d26c78fd4367a3b06ed48d1a42c5d7f"
 		},
 		{
 			"ImportPath": "github.com/quorumsco/cmd",
@@ -57,12 +60,20 @@
 			"Rev": "4fc50e53077432246684f9b766a6f3f6a81b8962"
 		},
 		{
+			"ImportPath": "github.com/quorumsco/gojimux",
+			"Rev": "2252460f8a38a594ee0e0e136ebe74576289da94"
+		},
+		{
+			"ImportPath": "github.com/quorumsco/jsonapi",
+			"Rev": "cf832352800b133ea301f10bcaccf30406f56b59"
+		},
+		{
 			"ImportPath": "github.com/quorumsco/logs",
 			"Rev": "0247b60e20020bc43a369063d97b55493ec673c1"
 		},
 		{
 			"ImportPath": "github.com/quorumsco/router",
-			"Rev": "ae4f49f83f7977c3ecf591033bb525d6f97dc3ee"
+			"Rev": "0cc02b61baea488c5be99ead4e80f80b1f4bf6e7"
 		},
 		{
 			"ImportPath": "github.com/quorumsco/settings",
@@ -73,17 +84,17 @@
 			"Rev": "264b0566801533988151a23fc5f75d66d831d6ae"
 		},
 		{
-			"ImportPath": "github.com/zenazn/goji/web/mutil",
+			"ImportPath": "github.com/zenazn/goji/web",
 			"Comment": "v0.9.0-25-gf11b3b8",
 			"Rev": "f11b3b82931df3c540a0a960b6b1de60094d33d6"
 		},
 		{
 			"ImportPath": "golang.org/x/crypto/bcrypt",
-			"Rev": "4d8f0cfeca8290cfc0091edf678a138ce669b1bb"
+			"Rev": "83f1503f771a82af8a31f358eb825e9efb5dae6c"
 		},
 		{
 			"ImportPath": "golang.org/x/crypto/blowfish",
-			"Rev": "4d8f0cfeca8290cfc0091edf678a138ce669b1bb"
+			"Rev": "83f1503f771a82af8a31f358eb825e9efb5dae6c"
 		}
 	]
 }

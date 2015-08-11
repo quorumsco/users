@@ -1,6 +1,6 @@
 package router
 
-type param struct {
-	name  string
-	value string
+type Param struct {
+	Name  string
+	Value string
 }

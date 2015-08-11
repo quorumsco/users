@@ -57,7 +57,7 @@ func serve(ctx *cli.Context) error {
 	logs.Debug("database type: %s", dialect)
 
 	var app = application.New()
-	if app.Components["DB"], err = databases.InitSQLX(dialect, args); err != nil {
+	if app.Components["DB"], err = databases.InitGORM(dialect, args); err != nil {
 		logs.Critical(err)
 		os.Exit(1)
 	}
@@ -82,7 +82,7 @@ func serve(ctx *cli.Context) error {
 	app.Use(app.Apply)
 
 	app.Get("/users/register", controllers.Register)
-	app.Get("/users/auth", controllers.Auth)
+	app.Post("/users/auth", controllers.Auth)
 	app.Post("/users/register", controllers.Register)
 
 	server, err := config.Server()

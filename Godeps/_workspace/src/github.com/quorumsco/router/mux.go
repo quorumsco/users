@@ -108,7 +108,7 @@ func (r *Router) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 		path := req.URL.Path
 		handle, found, params := m.routes[req.Method].find(path)
 		if found {
-			ctx := setContext(req)
+			ctx := SetContext(req)
 			ctx.setParams(params)
 			handle.ServeHTTP(w, req)
 			return

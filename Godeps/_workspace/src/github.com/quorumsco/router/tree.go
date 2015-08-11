@@ -17,7 +17,7 @@ func newNode(key uint8) *node {
 	}
 }
 
-func findRec(n *node, path string, params []param) (http.Handler, bool, []param) {
+func findRec(n *node, path string, params []Param) (http.Handler, bool, []Param) {
 	switch {
 	case len(path) == 0:
 		return n.handler, n.handler != nil, params
@@ -28,9 +28,9 @@ func findRec(n *node, path string, params []param) (http.Handler, bool, []param)
 				var (
 					handler        http.Handler
 					found          bool
-					returnedParams []param
+					returnedParams []Param
 				)
-				if newParam.name != "" {
+				if newParam.Name != "" {
 					handler, found, returnedParams = findRec(child, remainingPath, append(params, newParam))
 				} else {
 					handler, found, returnedParams = findRec(child, remainingPath, params)
@@ -44,8 +44,8 @@ func findRec(n *node, path string, params []param) (http.Handler, bool, []param)
 	return nil, false, nil
 }
 
-func (n *node) find(path string) (http.Handler, bool, []param) {
-	return findRec(n, path, make([]param, 0, 10))
+func (n *node) find(path string) (http.Handler, bool, []Param) {
+	return findRec(n, path, make([]Param, 0, 10))
 }
 
 func insertRec(n *node, segments []segment, handler http.Handler, params uint8) uint8 {
