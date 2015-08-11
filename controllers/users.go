@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 
@@ -13,7 +14,13 @@ import (
 	"github.com/quorumsco/users/views"
 )
 
-func sPtr(s string) *string { return &s }
+func sPtr(s string) *string {
+	if s == "" {
+		return nil
+	} else {
+		return &s
+	}
+}
 
 func Register(w http.ResponseWriter, req *http.Request) {
 	if req.Method == "POST" {
