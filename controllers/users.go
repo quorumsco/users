@@ -66,11 +66,16 @@ func Auth(w http.ResponseWriter, r *http.Request) {
 	}
 	username := infos["username"].(string)
 	password := infos["password"].(string)
+	passwordHash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	if err != nil {
+		panic(err)
+	}
 
-	var u = models.User{Mail: &username, Password: &password}
-
-	var db = getDB(r)
-	var userStore = models.UserStore(db)
+	var (
+		u         = models.User{Mail: &username, Password: sPtr(string(passwordHash))}
+		db        = getDB(r)
+		userStore = models.UserStore(db)
+	)
 	if err = userStore.First(&u); err != nil {
 		logs.Error(err)
 		Error(w, r, err.Error(), http.StatusInternalServerError)
