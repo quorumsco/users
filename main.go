@@ -5,6 +5,7 @@ import (
 	"runtime"
 
 	"github.com/codegangsta/cli"
+	"github.com/jinzhu/gorm"
 	"github.com/quorumsco/application"
 	"github.com/quorumsco/cmd"
 	"github.com/quorumsco/databases"
@@ -64,10 +65,7 @@ func serve(ctx *cli.Context) error {
 	logs.Debug("connected to %s", args)
 
 	if config.Migrate() {
-		if err := migrate(dialect, args); err != nil {
-			logs.Critical(err)
-			os.Exit(1)
-		}
+		app.Components["DB"].(*gorm.DB).AutoMigrate(models.Models()...)
 		logs.Debug("database migrated successfully")
 	}
 
@@ -91,17 +89,4 @@ func serve(ctx *cli.Context) error {
 		os.Exit(1)
 	}
 	return app.Serve(server.String())
-}
-
-func migrate(dialect string, args string) error {
-	var db, err = databases.InitGORM(dialect, args)
-	if err != nil {
-		return err
-	}
-
-	db.LogMode(true)
-
-	db.AutoMigrate(models.Models()...)
-
-	return nil
 }
