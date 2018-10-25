@@ -7,7 +7,7 @@ before_install:
  - go get github.com/tools/godep
  - go get github.com/mattn/goveralls
  - go get golang.org/x/tools/cmd/cover
- - go get github.com/golang/lint/golint
+ - go get golang.org/x/lint/golint
  - go get golang.org/x/tools/cmd/goimports
 install: godep restore
 script:
